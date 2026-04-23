@@ -4,14 +4,23 @@
  */
 package com.smartcampus.application;
 
+import org.glassfish.jersey.server.ResourceConfig;
 import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
 
 /**
- * JAX-RS Application entry point.
- * @ApplicationPath sets the base URI for all resources to /api/v1
+ * JAX-RS Application entry point for Tomcat deployment.
+ * @ApplicationPath sets the base URI to /api/v1
+ * ResourceConfig handles automatic package scanning for all
+ * resources, exception mappers, and filters.
  */
 @ApplicationPath("/api/v1")
-public class SmartCampusApplication extends Application {
-    // Jersey auto-scans for @Path annotated classes via ResourceConfig in Main.java
+public class SmartCampusApplication extends ResourceConfig {
+
+    public SmartCampusApplication() {
+        packages(
+            "com.smartcampus.resource",
+            "com.smartcampus.exception",
+            "com.smartcampus.filter"
+        );
+    }
 }
