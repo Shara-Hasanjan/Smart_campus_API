@@ -11,9 +11,10 @@ import com.smartcampus.model.Sensor;
 import com.smartcampus.model.SensorReading;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.net.URI;
+import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
 /**
@@ -43,7 +44,7 @@ public class SensorReadingResource {
     // POST /api/v1/sensors/{sensorId}/readings — add new reading (201 | 400 | 403)
     // Side effect: updates parent Sensor.currentValue (Part 4.2)
     @POST
-    public Response addReading(SensorReading reading) {
+    public Response addReading(SensorReading reading, @Context UriInfo uriInfo) {
         Sensor sensor = store.getSensors().get(sensorId);
 
         // Part 5.3 — block readings for MAINTENANCE sensors
@@ -69,7 +70,7 @@ public class SensorReadingResource {
         sensor.setCurrentValue(newReading.getValue());
 
         return Response
-                .created(URI.create("/api/v1/sensors/" + sensorId + "/readings/" + newReading.getId()))
+                .created(uriInfo.getAbsolutePathBuilder().path(newReading.getId()).build())
                 .entity(newReading)
                 .build();
     }

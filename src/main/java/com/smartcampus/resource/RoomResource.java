@@ -11,9 +11,10 @@ import com.smartcampus.model.ErrorResponse;
 import com.smartcampus.model.Room;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.net.URI;
+import javax.ws.rs.core.UriInfo;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class RoomResource {
 
     // POST /api/v1/rooms — create a new room (201 | 400 | 409)
     @POST
-    public Response createRoom(Room room) {
+    public Response createRoom(Room room, @Context UriInfo uriInfo) {
         if (room == null || room.getId() == null || room.getId().trim().isEmpty()) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .type(MediaType.APPLICATION_JSON)
@@ -59,7 +60,7 @@ public class RoomResource {
         }
         store.getRooms().put(room.getId(), room);
         return Response
-                .created(URI.create("/api/v1/rooms/" + room.getId()))
+                .created(uriInfo.getAbsolutePathBuilder().path(room.getId()).build())
                 .entity(room)
                 .build();
     }

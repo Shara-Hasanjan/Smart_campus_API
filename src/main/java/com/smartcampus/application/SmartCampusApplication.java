@@ -9,11 +9,11 @@ import javax.ws.rs.ApplicationPath;
 
 /**
  * JAX-RS Application entry point for Tomcat deployment.
- * @ApplicationPath sets the base URI to /api/v1
+ * Base URI is set to /api/v1 via web.xml mapping.
  * ResourceConfig handles automatic package scanning for all
  * resources, exception mappers, and filters.
  */
-@ApplicationPath("/api/v1")
+@ApplicationPath("/")
 public class SmartCampusApplication extends ResourceConfig {
 
     public SmartCampusApplication() {

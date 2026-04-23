@@ -4,11 +4,13 @@
  */
 package com.smartcampus.resource;
 
+import javax.ws.rs.core.Context;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -22,8 +24,9 @@ import java.util.Map;
 public class DiscoveryResource {
 
     @GET
-    public Response discover() {
+    public Response discover(@Context UriInfo uriInfo) {
         Map<String, Object> response = new LinkedHashMap<String, Object>();
+        String baseUri = uriInfo.getBaseUri().toString();
 
         response.put("api", "Smart Campus Sensor and Room Management API");
         response.put("version", "1.0.0");
@@ -37,11 +40,16 @@ public class DiscoveryResource {
         response.put("contact", contact);
 
         Map<String, Object> resources = new LinkedHashMap<String, Object>();
-        resources.put("rooms",    buildLink("/api/v1/rooms",                       "GET, POST",   "List all rooms or create a new room"));
-        resources.put("room",     buildLink("/api/v1/rooms/{roomId}",              "GET, DELETE", "Retrieve or decommission a specific room"));
-        resources.put("sensors",  buildLink("/api/v1/sensors",                     "GET, POST",   "List sensors (supports ?type= filter) or register a new sensor"));
-        resources.put("sensor",   buildLink("/api/v1/sensors/{sensorId}",          "GET",         "Retrieve a specific sensor by ID"));
-        resources.put("readings", buildLink("/api/v1/sensors/{sensorId}/readings", "GET, POST",   "Get or append historical readings for a sensor"));
+        resources.put("rooms", buildLink(baseUri + "rooms", "GET, POST",
+                "List all rooms or create a new room"));
+        resources.put("room", buildLink(baseUri + "rooms/{roomId}", "GET, DELETE",
+                "Retrieve or decommission a specific room"));
+        resources.put("sensors", buildLink(baseUri + "sensors", "GET, POST",
+                "List sensors (supports ?type= filter) or register a new sensor"));
+        resources.put("sensor", buildLink(baseUri + "sensors/{sensorId}", "GET",
+                "Retrieve a specific sensor by ID"));
+        resources.put("readings", buildLink(baseUri + "sensors/{sensorId}/readings", "GET, POST",
+                "Get or append historical readings for a sensor"));
         response.put("resources", resources);
 
         return Response.ok(response).build();

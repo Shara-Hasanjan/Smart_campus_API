@@ -11,9 +11,10 @@ import com.smartcampus.model.ErrorResponse;
 import com.smartcampus.model.Sensor;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.net.URI;
+import javax.ws.rs.core.UriInfo;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +43,7 @@ public class SensorResource {
 
     // POST /api/v1/sensors — register a new sensor (201 | 400 | 409 | 422)
     @POST
-    public Response createSensor(Sensor sensor) {
+    public Response createSensor(Sensor sensor, @Context UriInfo uriInfo) {
         if (sensor == null || sensor.getId() == null || sensor.getId().trim().isEmpty()) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .type(MediaType.APPLICATION_JSON)
@@ -76,7 +77,7 @@ public class SensorResource {
         store.getRooms().get(sensor.getRoomId()).getSensorIds().add(sensor.getId());
 
         return Response
-                .created(URI.create("/api/v1/sensors/" + sensor.getId()))
+                .created(uriInfo.getAbsolutePathBuilder().path(sensor.getId()).build())
                 .entity(sensor)
                 .build();
     }
